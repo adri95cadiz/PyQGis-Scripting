@@ -40,8 +40,8 @@ writer = QgsVectorFileWriter(result_file, 'UTF-8', layerFields, QgsWkbTypes.Poin
 input_layer = QgsProject.instance().mapLayersByName(vector_layer)[0];
 
 # Recover the values of the cut parameter.
-index_cut = provincia.fields().indexOf(cut_param);
-cut_codes = provincia.uniqueValues(index_cut);
+index_cut = input_layer.fields().indexOf(cut_param);
+cut_codes = input_layer.uniqueValues(index_cut);
 
 # For each cut:
 for cut_id in cut_codes:
