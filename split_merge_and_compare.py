@@ -3,7 +3,7 @@ from qgis.core import *
 ################################PARAMETERS#####################################
 #
 # NAME OF THE LAYER TO PROCESS:
-input_layer = 'INPUT_LAYER_NAME';
+input_layer_name = 'INPUT_LAYER_NAME';
 # .SHP FILE WHERE THE RESULTS WILL BE STORED:
 result_file = "Path/To/File"
 # THRESHOLD VALUE TO COMPARE THE LAYERS:
@@ -11,8 +11,8 @@ min_value = 1000;
 #
 ###############################################################################
 
-# Obtenemos la capa relativa a las provincias a analizar.
-provincia = QgsProject.instance().mapLayersByName(capa_provincia)[0];
+# We obtain the input_layer defined by input_layer_name
+input_layer = QgsProject.instance().mapLayersByName(input_layer_name)[0];
 
 ###############################################################################
 
@@ -38,14 +38,15 @@ array_layers_value = [];
 # Para each code:
 for code in codes:
     # Select rows which ITER_PARAM equals code.
-    selection = processing.run('qgis:selectbyattribute',{'FIELD':'CD_MUN', 'INPUT':layer_selected, 'METHOD':0, 'OPERATOR':0, 'VALUE':code})['OUTPUT'];
+    selection = processing.run('qgis:selectbyattribute',{'FIELD':'ITER_PARAM', 'INPUT':layer_selected, 'METHOD':0, 'OPERATOR':0, 'VALUE':code})['OUTPUT'];
     
-    # Copiamos la selección a una nueva capa temporal.
+    # Copy the selection to a temporary layer.
     selected = processing.run('qgis:saveselectedfeatures', {'INPUT':selection, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT'];
     
-    # Disolvemos los municipios por codigo de municipio para obtener las unidades municipales.
+    # We dissolve the selected layer to create a new dissolved layer of the iterated parameter.
     layer_dissolve = processing.run("native:dissolve",{'INPUT':selected, 'FIELD':[], 'OUTPUT':'memory:'})['OUTPUT'];
     
+    # We append the layer to the total array
     array_layers_total.append(layer_dissolve);
     
     # Calculate the total of value VAL_TOTAL.
@@ -55,6 +56,7 @@ for code in codes:
     
     # If the total value is bigger than the min_value...
     if total_value >= min_value:
+        # We append the layer to the compare array
         array_layers_value.append(layer_dissolve);
 
 # We merge the layers from all the total layers array
