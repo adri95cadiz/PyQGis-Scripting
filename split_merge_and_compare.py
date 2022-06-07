@@ -27,8 +27,8 @@ selection_layer = processing.run('qgis:selectbyattribute',{'FIELD':'PARAM', 'INP
 layer_selected = processing.run('qgis:saveselectedfeatures', {'INPUT':selection_layer, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT'];
 
 # Iterate by CODES defined by ITER_PARAM.
-index_list = provincia_OV.fields().indexOf('ITER_PARAM');
-codes = provincia_OV.uniqueValues(index_list);
+index_list = selection_layer.fields().indexOf('ITER_PARAM');
+codes = selection_layer.uniqueValues(index_list);
 
 ###############################################################################
 
