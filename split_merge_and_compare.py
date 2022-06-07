@@ -5,9 +5,17 @@ from qgis.core import *
 # NAME OF THE LAYER TO PROCESS:
 input_layer_name = 'INPUT_LAYER_NAME';
 # .SHP FILE WHERE THE RESULTS WILL BE STORED:
-result_file = "Path/To/File"
+result_file = "Path/To/File";
+# Parameter that will filter the layer initially
+FILTER_PARAM = 'FILTER_PARAM';
+# Value that the FILTER_PARAM will filter by
+FILTER_VALUE = 'FILTER_VALUE';
+# Parameter that the layer will be divided by
+ITER_PARAM = 'ITER_PARAM';
+# Parameter that will act as threshold to create the comparison layer
+COMPARE_PARAM = 'COMPARE_PARAM';
 # THRESHOLD VALUE TO COMPARE THE LAYERS:
-min_value = 1000;
+MIN_VALUE = 1000;
 #
 ###############################################################################
 
@@ -21,13 +29,13 @@ input_layer = QgsProject.instance().mapLayersByName(input_layer_name)[0];
 ###############################################################################
 
 # Select rows which have PARAM equals VAL (PARAM = VAL)
-selection_layer = processing.run('qgis:selectbyattribute',{'FIELD':'PARAM', 'INPUT':input_layer, 'METHOD':0, 'OPERATOR':0, 'VALUE':'VAL'})['OUTPUT'];
+selection_layer = processing.run('qgis:selectbyattribute',{'FIELD':FILTER_PARAM, 'INPUT':input_layer, 'METHOD':0, 'OPERATOR':0, 'VALUE':FILTER_VALUE})['OUTPUT'];
 
 # Copy the selection to a temporary layer.
 layer_selected = processing.run('qgis:saveselectedfeatures', {'INPUT':selection_layer, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT'];
 
 # Iterate by CODES defined by ITER_PARAM.
-index_list = selection_layer.fields().indexOf('ITER_PARAM');
+index_list = selection_layer.fields().indexOf(ITER_PARAM);
 codes = selection_layer.uniqueValues(index_list);
 
 ###############################################################################
@@ -50,12 +58,12 @@ for code in codes:
     array_layers_total.append(layer_dissolve);
     
     # Calculate the total of value VAL_TOTAL.
-    list_values = QgsVectorLayerUtils.getValues(selected, 'VAL_TOTAL')[0];
+    list_values = QgsVectorLayerUtils.getValues(selected, COMPARE_PARAM)[0];
     list_values = list(filter(None, list_values));
     total_value = sum(list_values);
     
     # If the total value is bigger than the min_value...
-    if total_value >= min_value:
+    if total_value >= MIN_VALUE:
         # We append the layer to the compare array
         array_layers_value.append(layer_dissolve);
 
