@@ -3,9 +3,9 @@ from qgis.core import *
 ################################PARAMETERS#####################################
 #
 # NAME OF THE LAYER TO PROCESS:
-input_layer_name = 'INPUT_LAYER_NAME';
+INPUT_LAYER_NAME = 'INPUT_LAYER_NAME';
 # .SHP FILE WHERE THE RESULTS WILL BE STORED:
-result_file = "Path/To/File";
+RESULT_FILE = "Path/To/File";
 # Parameter that will filter the layer initially
 FILTER_PARAM = 'FILTER_PARAM';
 # Value that the FILTER_PARAM will filter by
@@ -20,7 +20,7 @@ MIN_VALUE = 1000;
 ###############################################################################
 
 # We obtain the input_layer defined by input_layer_name
-input_layer = QgsProject.instance().mapLayersByName(input_layer_name)[0];
+input_layer = QgsProject.instance().mapLayersByName(INPUT_LAYER_NAME)[0];
 
 ###############################################################################
 
@@ -46,13 +46,13 @@ array_layers_value = [];
 # Para each code:
 for code in codes:
     # Select rows which ITER_PARAM equals code.
-    selection = processing.run('qgis:selectbyattribute',{'FIELD':'ITER_PARAM', 'INPUT':layer_selected, 'METHOD':0, 'OPERATOR':0, 'VALUE':code})['OUTPUT'];
+    selection = processing.run('qgis:selectbyattribute', {'FIELD':'ITER_PARAM', 'INPUT':layer_selected, 'METHOD':0, 'OPERATOR':0, 'VALUE':code})['OUTPUT'];
     
     # Copy the selection to a temporary layer.
     selected = processing.run('qgis:saveselectedfeatures', {'INPUT':selection, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT'];
     
     # We dissolve the selected layer to create a new dissolved layer of the iterated parameter.
-    layer_dissolve = processing.run("native:dissolve",{'INPUT':selected, 'FIELD':[], 'OUTPUT':'memory:'})['OUTPUT'];
+    layer_dissolve = processing.run("native:dissolve", {'INPUT':selected, 'FIELD':[], 'OUTPUT':'memory:'})['OUTPUT'];
     
     # We append the layer to the total array
     array_layers_total.append(layer_dissolve);
@@ -68,19 +68,19 @@ for code in codes:
         array_layers_value.append(layer_dissolve);
 
 # We merge the layers from all the total layers array
-merge_total = processing.run("qgis:mergevectorlayers", {'LAYERS':array_layers_total,'CRS':'EPSG:25830','OUTPUT':'memory:'})['OUTPUT'];
+merge_total = processing.run("qgis:mergevectorlayers", {'LAYERS':array_layers_total, 'CRS':'EPSG:25830', 'OUTPUT':'memory:'})['OUTPUT'];
 
 # We store the layer in the project with a new name
-merge_total.setName(input_layer + "_total_dissolved");
-result = result_file + input_layer + "_total_dissolved.shp";
-_writer = QgsVectorFileWriter.writeAsVectorFormat(merge_total,result,'UTF-8',merge_total.crs(),"ESRI Shapefile");
+merge_total.setName(INPUT_LAYER_NAME + "_total_dissolved");
+result = RESULT_FILE + INPUT_LAYER_NAME + "_total_dissolved.shp";
+_writer = QgsVectorFileWriter.writeAsVectorFormat(merge_total, result, 'UTF-8', merge_total.crs(), "ESRI Shapefile");
 QgsProject.instance().addMapLayer(merge_total);
 
 # We merge the layers from array where the value is bigger than the threshold
-merge_value = processing.run("qgis:mergevectorlayers", {'LAYERS':array_layers_value,'CRS':'EPSG:25830','OUTPUT':'memory:'})['OUTPUT'];
+merge_value = processing.run("qgis:mergevectorlayers", {'LAYERS':array_layers_value, 'CRS':'EPSG:25830', 'OUTPUT':'memory:'})['OUTPUT'];
 
 # We store the layer in the project with a new name
-merge_value.setName(input_layer + "_value_dissolved");
-result = result_file + input_layer + "_value_dissolved.shp";
-_writer = QgsVectorFileWriter.writeAsVectorFormat(merge_value,result,'UTF-8',merge_value.crs(),"ESRI Shapefile");
+merge_value.setName(INPUT_LAYER_NAME + "_value_dissolved");
+result = RESULT_FILE + INPUT_LAYER_NAME + "_value_dissolved.shp";
+_writer = QgsVectorFileWriter.writeAsVectorFormat(merge_value, result, 'UTF-8', merge_value.crs(), "ESRI Shapefile");
 QgsProject.instance().addMapLayer(merge_value);
