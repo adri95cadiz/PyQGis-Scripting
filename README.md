@@ -32,3 +32,9 @@ annual_raster = 'ANNUAL_RASTER_LAYER_NAME';
 
 NAME OF THE MONTHLY RASTER GROUP WE WILL EXTRACT THE DATA FROM:
 monthly_group = 'MONTHLY_RASTER_GROUP_NAME';
+
+## split_merge_and_compare
+
+Let's you create two layers based on the input_layer, each layer will be filtered by the parameter FILTER_PARAM = FILTER_VAL which you can redefine to any parameter to any value or just skip this step, later the layer will be split by the parameter ITER_PARAM which you can also redefine, and each section will be dissolved to create a homogeneous layer. Later they will merge in two layers, one with all the dissolved sections, and another which will only have the sections where the sum of VAL_TOTAL is bigger than min_value.
+
+### PARAMETERS
