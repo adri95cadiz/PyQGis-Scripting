@@ -4,7 +4,7 @@ Scripts developed for the automation of processes in the QGis platform
 
 ## dissolve_group
 
-Lets you batch dissolve layers in PyQGis, just put the name of the group of layers and execute the script.
+Lets you batch dissolve layers in PyQGis, just put the name of the group of layers (Change GROUP_NAME for defined name) and execute the script.
 
 ## cut_raster_by_vector_and_process_data
 
@@ -42,10 +42,10 @@ After this the layers will merge in two layers, one with all the dissolved secti
 ### PARAMETERS
 
 NAME OF THE LAYER TO PROCESS:
-input_layer_name = 'INPUT_LAYER_NAME';
+INPUT_LAYER_NAME = 'INPUT_LAYER_NAME';
 
 .SHP FILE WHERE THE RESULTS WILL BE STORED:
-result_file = "Path/To/File";
+RESULT_FILE = "Path/To/File";
 
 Parameter that will filter the layer initially
 FILTER_PARAM = 'FILTER_PARAM';
