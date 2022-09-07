@@ -54,6 +54,7 @@ for cut_id in cut_codes:
     # Calculate the total value of the sum value of the processing.
     list_values = QgsVectorLayerUtils.getValues(cut_layer, value_param)[0];
     list_values = list(filter(None, list_values));
+    
     # I have selected to base the condition on the sum of values but this can be changed too.
     total_value = sum(list_values); 
 
@@ -107,7 +108,7 @@ for cut_id in cut_codes:
             'DATA_TYPE': 0,
             'INPUT': cut_layer,
             'KEEP_RESOLUTION': True,
-            'MASK': municipio,
+            'MASK': monthly_layer,
             'MULTITHREADING': True,
             'SOURCE_CRS': cut_layer.crs(),
             'TARGET_CRS': cut_layer.crs(),
@@ -126,9 +127,6 @@ for cut_id in cut_codes:
             feature.setAttributes([cut_id, total_value, month+1, NULL, monthly_data['MEAN']]);
             writer.addFeature(feature);
             
-            # Iterate the month.
-            month += 1;  
-
         ##########################################
 
 # Save the obtained results to a layer and add to the project.
